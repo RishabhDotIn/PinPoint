@@ -10,9 +10,27 @@ import campusesRouter from './src/routes/campuses.js';
 
 const app = express();
 
-// CORS - adjust origins as needed
-const allowedOrigins = (process.env.CORS_ORIGINS || '').split(',').filter(Boolean);
-app.use(cors({ origin: (origin, cb) => cb(null, !origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)), credentials: true }));
+// CORS - adjustable origins with wildcard support (e.g., *.vercel.app)
+const allowedOriginsRaw = (process.env.CORS_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean);
+const matchOrigin = (origin) => {
+  if (!origin) return true; // same-origin or non-browser requests
+  if (allowedOriginsRaw.length === 0) return true; // allow all if not configured
+  for (const rule of allowedOriginsRaw) {
+    if (!rule) continue;
+    if (rule.startsWith('*.')) {
+      // wildcard subdomain: *.example.com matches https://sub.example.com
+      const host = rule.slice(2);
+      try {
+        const u = new URL(origin);
+        if (u.hostname === host || u.hostname.endsWith('.' + host)) return true;
+      } catch {}
+    } else if (rule === origin) {
+      return true;
+    }
+  }
+  return false;
+};
+app.use(cors({ origin: (origin, cb) => cb(null, matchOrigin(origin)), credentials: true }));
 app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
