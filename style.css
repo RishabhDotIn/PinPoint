@@ -263,7 +263,6 @@ footer small {
     word-spacing: 1px;
     font-size: 1.2rem;
     color: rgba(255, 255, 255, 0.616);
-    margin-left: 19em;
     cursor: pointer;
 }
 
@@ -276,7 +275,6 @@ small span:hover {
     color: rgba(255, 255, 255, 0.582);
     font-size: 2rem;
     cursor: pointer;
-    margin-left: 11%;
 }
 
 .brand a:hover {
@@ -293,13 +291,11 @@ small span:hover {
 
 .BackToTop{
   margin-top: 30px;
-  margin-left: 46%;
   color: rgba(255, 255, 255, 0.582);
 }
 
 .back{
     color: rgba(255, 255, 255, 0.582);
-    margin-left: 7%;
 }
 
 .back:hover{
@@ -307,7 +303,7 @@ small span:hover {
 }
 
 .favicon{
-    margin-left: 40%;
+    margin-top: 0.5rem;
 }
 
 .social-media{
@@ -321,7 +317,9 @@ small span:hover {
 
 /* Responsiveness */
 @media (max-width:600px){
-    .container{
+    /* Scope flex changes to home sections */
+    .section-2 .container,
+    .section-3 .container{
         flex-direction: column;
     }
     .section-3{
@@ -333,5 +331,13 @@ small span:hover {
     }
     #page-footer{
         overflow: hidden;
+        text-align: center;
     }
 }
+
+/* Footer layout: center items on all screens */
+#page-footer{
+  text-align: center;
+}
+#page-footer .brand{ margin-bottom: 0.5rem; }
+#page-footer .favicon{ margin-top: 0.5rem; }
