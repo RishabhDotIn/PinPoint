@@ -3,26 +3,78 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="foundForm.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lemon&family=Monoton&family=Montserrat:ital,wght@0,200;0,400;0,500;1,300&display=swap" rel="stylesheet">
     <title>Choose Campus - PinPoint</title>
   </head>
   <body>
-    <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="../index.html">PinPoint</a>
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark">
+      <a class="navbar-brand grow" href="../index.html">PinPoint</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item">
+            <a class="nav-link grow" href="../index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link grow" href="lostForm.html">Lost</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link grow" href="foundForm.html">Found</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link grow" href="../about_us.html">About Us</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link grow" href="contactus.html">Contact Us</a>
+          </li>
+        </ul>
+        <a href="#"><i class="fas fa-user signin grow"> SignIn</i></a>
+      </div>
     </nav>
 
-    <main class="container py-5">
-      <h2>Select your campus</h2>
-      <div class="card p-4">
-        <div class="form-group">
-          <label>Search</label>
-          <input id="q" type="text" class="form-control" placeholder="Search campuses..." />
-        </div>
-        <button id="searchBtn" class="btn btn-secondary mb-3">Search</button>
+    <main>
+      <section>
+        <div class="container" id="main-container">
+          <div class="image">
+            <img src="../images/register.jpg" alt="">
+          </div>
 
-        <ul id="results" class="list-group"></ul>
-      </div>
+          <div class="container p-5 mt-5" id="form-container">
+            <h2 class="text-center mb-4">Select your campus</h2>
+            <div class="card p-4">
+              <div class="form-group">
+                <label>Search</label>
+                <input id="q" type="text" class="form-control" placeholder="Search campuses..." />
+              </div>
+              <button id="searchBtn" type="button" class="btn btn-primary mb-3">Search</button>
+              <ul id="results" class="list-group"></ul>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
+
+    <footer id="sticky-footer" class=" py-2 bg-dark">
+      <div class="brand">
+        <a class="navbar-brand" href="#">PinPoint</a>
+      </div>
+      <div class="copyright">
+        <small> <span>Copyright &copy;</span> <span>All Rights Reserved</span> <span>Terms of Use</span> and
+          <span>Privacy Policy</span></small>
+      </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
 
     <script type="module">
       import { Api } from '../assets/js/api.js';
@@ -52,7 +104,7 @@
               <div class="font-weight-bold">${c.name}</div>
               <div class="text-muted">${c.slug}</div>
             </div>
-            <button class="btn btn-primary btn-sm">Select</button>
+            <button class="btn btn-success btn-sm" type="button">Select</button>
           `;
           li.querySelector('button').addEventListener('click', async () => {
             const res = await Api.updateMe({ campusId: c._id });
