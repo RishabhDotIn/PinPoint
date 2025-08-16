@@ -60,6 +60,11 @@ section {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap; /* allow text and image to stack on small screens */
+}
+
+.section-1 .text, .section-1 .img { 
+    padding: 0.5rem 0; 
 }
 
 .section-1::before {
@@ -169,7 +174,7 @@ h2 hr {
 .section-3 .card-title {
     font-family: 'Open Sans', sans-serif;
     font-weight: 600;
-    font-size: 3rem;
+    font-size: 2.25rem; /* smaller by default */
     letter-spacing: 1px;
     text-transform: uppercase;
     color: white;
@@ -197,9 +202,13 @@ h2 hr {
 }
 
 .section-3 ul li {
-    font-size: 1.3rem;
+    font-size: 1.1rem; /* smaller by default */
     font-weight: 500;
     color: #fff;
+}
+
+.section-3 .card-image img{ 
+    max-width: 85%; 
 }
 
 .service .one {
@@ -350,18 +359,27 @@ small span:hover {
     }
 
     /* Service section smaller on mobile */
-    .section-3 .card-title{
-        font-size: 1.75rem;
+    .section-3 .card-image img{ 
+        max-width: 100%; 
     }
-    .section-3 ul li{
-        font-size: 1rem;
+    .section-3 .card-title{ 
+        font-size: 1.5rem; 
     }
-    .service .one{
-        padding: 1rem 1rem;
+    .section-3 ul li{ 
+        font-size: 0.95rem; 
+    }
+    .service .one{ 
+        padding: 1rem 1rem; 
     }
 
     /* Images scale fully on mobile */
     .lost-found{ width: 100%; }
+
+    /* Keep hero button and text compact */
+    .learn-more{ 
+        font-size: 1rem; 
+        padding: 0.5rem 1.1rem; 
+    }
 }
 
 /* Tablet tweaks */
@@ -369,13 +387,15 @@ small span:hover {
     .navbar{ padding: 0.75rem 1.25rem; }
     .pinpoint-heading{ font-size: 3.25rem; }
     section .title{ font-size: 2.25rem; }
+    .section-3 .card-title{ font-size: 2rem; }
+    .section-3 ul li{ font-size: 1.05rem; }
 }
 
 /* Mid devices */
 @media (max-width: 768px){
-    .section-3 .card-title{ font-size: 2rem; }
-    .section-3 ul li{ font-size: 1.1rem; }
-    .service .one{ padding: 1.25rem 1rem; }
+    .section-3 .card-title{ font-size: 1.75rem; }
+    .section-3 ul li{ font-size: 1rem; }
+    .service .one{ padding: 1rem 0.75rem; }
 }
 
 /* Footer layout: center items on all screens */
