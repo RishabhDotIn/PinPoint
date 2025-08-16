@@ -23,6 +23,59 @@ app.get('/health', (req, res) => {
   res.json({ ok: true, uptime: process.uptime() });
 });
 
+// OTP proxy to avoid browser CORS on the auth service
+const OTP_UPSTREAM = process.env.OTP_UPSTREAM || 'https://emailvalidator-g7gq.onrender.com';
+const forwardSetCookie = (res, upstreamRes) => {
+  try {
+    const cookie = upstreamRes.headers.get('set-cookie');
+    if (cookie) res.set('set-cookie', cookie);
+  } catch {}
+};
+
+app.post('/v1/auth/request-otp', async (req, res) => {
+  try {
+    const upstream = await fetch(`${OTP_UPSTREAM}/v1/auth/request-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req.body)
+    });
+    forwardSetCookie(res, upstream);
+    const data = await upstream.json().catch(() => ({}));
+    res.status(upstream.status).json(data);
+  } catch (e) {
+    console.error('OTP proxy request-otp failed', e);
+    res.status(502).json({ error: { message: 'Upstream OTP service unavailable' } });
+  }
+});
+
+app.post('/v1/auth/verify-otp', async (req, res) => {
+  try {
+    const upstream = await fetch(`${OTP_UPSTREAM}/v1/auth/verify-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req.body)
+    });
+    forwardSetCookie(res, upstream);
+    const data = await upstream.json().catch(() => ({}));
+    res.status(upstream.status).json(data);
+  } catch (e) {
+    console.error('OTP proxy verify-otp failed', e);
+    res.status(502).json({ error: { message: 'Upstream OTP service unavailable' } });
+  }
+});
+
+app.post('/v1/auth/refresh', async (req, res) => {
+  try {
+    const upstream = await fetch(`${OTP_UPSTREAM}/v1/auth/refresh`, { method: 'POST' });
+    forwardSetCookie(res, upstream);
+    const data = await upstream.json().catch(() => ({}));
+    res.status(upstream.status).json(data);
+  } catch (e) {
+    console.error('OTP proxy refresh failed', e);
+    res.status(502).json({ error: { message: 'Upstream OTP service unavailable' } });
+  }
+});
+
 // Routes
 app.use('/v1/me', meRouter); // GET /v1/me, PATCH /v1/me
 app.use('/v1/campuses', campusesRouter); // GET /v1/campuses

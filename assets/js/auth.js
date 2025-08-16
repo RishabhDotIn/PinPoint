@@ -18,28 +18,41 @@ export async function handleLoginForm(emailInput, requestBtn, otpSection, otpInp
   requestBtn.addEventListener('click', async () => {
     const email = emailInput.value.trim();
     if (!email) return alert('Enter email');
-    await Api.requestOtp(email);
-    otpSection.style.display = 'block';
     requestBtn.disabled = true;
+    try {
+      const res = await Api.requestOtp(email);
+      if (res && res.ok === false) throw new Error(res?.error?.message || 'Failed to request OTP');
+      otpSection.style.display = 'block';
+    } catch (err) {
+      console.error('Request OTP failed:', err);
+      alert(`Could not request OTP. Please try again.\n${err?.message || ''}`);
+    } finally {
+      requestBtn.disabled = false;
+    }
   });
 
   verifyBtn.addEventListener('click', async () => {
     const email = emailInput.value.trim();
     const otp = otpInput.value.trim();
     if (!otp) return alert('Enter OTP');
-    const res = await Api.verifyOtp(email, otp);
-    if (res && res.accessToken) {
-      // Decide where to go after login
-      try {
-        const me = await Api.getMe();
-        if (!me.name) return (window.location.href = '/forms/profile.html');
-        if (!me.campusId) return (window.location.href = '/forms/campus-select.html');
-        window.location.href = '/index.html';
-      } catch {
-        window.location.href = '/forms/profile.html';
+    try {
+      const res = await Api.verifyOtp(email, otp);
+      if (res && res.accessToken) {
+        // Decide where to go after login
+        try {
+          const me = await Api.getMe();
+          if (!me.name) return (window.location.href = '/forms/profile.html');
+          if (!me.campusId) return (window.location.href = '/forms/campus-select.html');
+          window.location.href = '/index.html';
+        } catch {
+          window.location.href = '/forms/profile.html';
+        }
+      } else {
+        alert(res?.error?.message || 'Failed to verify');
       }
-    } else {
-      alert(res?.error?.message || 'Failed to verify');
+    } catch (err) {
+      console.error('Verify OTP failed:', err);
+      alert(`Could not verify OTP. Please try again.\n${err?.message || ''}`);
     }
   });
 }
