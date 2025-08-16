@@ -4,7 +4,7 @@ console.log('auth.js loaded');
 
 import { Api } from './api.js';
 
-export async function requireAuthOrRedirect(loginPath = '/forms/login.html') {
+export async function requireAuthOrRedirect(loginPath = '/forms/register.html') {
   try {
     const me = await Api.getMe();
     if (!me || me.error) throw new Error('unauth');
