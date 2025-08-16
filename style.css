@@ -159,7 +159,7 @@ h2 hr {
 }
 
 .lost-found {
-    width: 80%;
+    width: 100%;
 }
 
 .section-3 .container {
@@ -333,6 +333,49 @@ small span:hover {
         overflow: hidden;
         text-align: center;
     }
+
+    /* Navbar compact */
+    .navbar{
+        padding: 0.5rem 1rem;
+    }
+
+    /* Hero heading scale */
+    .pinpoint-heading{
+        font-size: 2.25rem;
+        text-align: center;
+    }
+    section .title{
+        font-size: 1.75rem;
+        text-align: center;
+    }
+
+    /* Service section smaller on mobile */
+    .section-3 .card-title{
+        font-size: 1.75rem;
+    }
+    .section-3 ul li{
+        font-size: 1rem;
+    }
+    .service .one{
+        padding: 1rem 1rem;
+    }
+
+    /* Images scale fully on mobile */
+    .lost-found{ width: 100%; }
+}
+
+/* Tablet tweaks */
+@media (max-width: 992px){
+    .navbar{ padding: 0.75rem 1.25rem; }
+    .pinpoint-heading{ font-size: 3.25rem; }
+    section .title{ font-size: 2.25rem; }
+}
+
+/* Mid devices */
+@media (max-width: 768px){
+    .section-3 .card-title{ font-size: 2rem; }
+    .section-3 ul li{ font-size: 1.1rem; }
+    .service .one{ padding: 1.25rem 1rem; }
 }
 
 /* Footer layout: center items on all screens */
