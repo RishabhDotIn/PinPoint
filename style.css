@@ -454,6 +454,14 @@ small span:hover {
 /* Footer layout: center items on all screens */
 #page-footer{
   text-align: center;
+  background-color: #030027 !important; /* match navbar */
+  color: #fff;
 }
 #page-footer .brand{ margin-bottom: 0.5rem; }
 #page-footer .favicon{ margin-top: 0.5rem; }
+
+/* Auth page footer id */
+#sticky-footer{
+  background-color: #030027 !important; /* match navbar */
+  color: #fff;
+}
