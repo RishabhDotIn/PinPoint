@@ -67,6 +67,14 @@ section {
     padding: 0.5rem 0; 
 }
 
+/* Hero copy width for better readability */
+.section-1 .text p{
+    max-width: 52ch; /* comfortable line length on desktop */
+}
+
+/* Center image on mobile */
+.section-1 .img{ display:flex; justify-content:center; }
+
 .section-1::before {
     content: "";
     background: url('images/background.png') center/cover no-repeat;
@@ -124,11 +132,12 @@ h2 hr {
 }
 
 .section-2 .container {
-    max-width: 90%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    max-width: 80%; /* match other sections */
 }
+
+/* Center the image column content and keep copy readable */
+.section-2 .img{ display:flex; justify-content:center; }
+.section-2 .text p{ max-width: 58ch; }
 
 .learn-more {
     text-decoration: none;
@@ -194,6 +203,8 @@ h2 hr {
 .lost-found-card {
     background: #030027;
     border: 2px solid #0300273a;
+    padding: 2rem; /* consistent padding */
+    border-radius: 10px;
 }
 
 .heading {
@@ -207,8 +218,25 @@ h2 hr {
     color: #fff;
 }
 
-.section-3 .card-image img{ 
-    max-width: 85%; 
+.section-3 .card-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.section-3 .card-image img {
+    max-width: 75%; /* slightly smaller on desktop */
+    height: auto;
+}
+
+/* Ensure the cards look similar in height on desktop */
+@media (min-width: 992px){
+  .section-3 .one.lost-found-card{
+    min-height: 380px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 }
 
 .service .one {
@@ -360,7 +388,7 @@ small span:hover {
 
     /* Service section smaller on mobile */
     .section-3 .card-image img{ 
-        max-width: 100%; 
+        max-width: 90%; /* a bit smaller but fills nicely */
     }
     .section-3 .card-title{ 
         font-size: 1.5rem; 
@@ -380,6 +408,25 @@ small span:hover {
         font-size: 1rem; 
         padding: 0.5rem 1.1rem; 
     }
+
+    /* Narrower copy and centered on small screens */
+    .section-1 .text p{ 
+        max-width: 34ch; 
+        margin-left: auto; 
+        margin-right: auto; 
+        text-align: center; 
+    }
+    .section-1 .img img{ max-width: 85%; height:auto; }
+
+    /* WHAT WE DO mobile layout */
+    .section-2 .text{ text-align:center; }
+    .section-2 .text p{ 
+        max-width: 36ch; 
+        margin-left:auto; 
+        margin-right:auto; 
+        text-align: center; 
+    }
+    .section-2 .img img{ max-width: 90%; height:auto; }
 }
 
 /* Tablet tweaks */
@@ -388,7 +435,13 @@ small span:hover {
     .pinpoint-heading{ font-size: 3.25rem; }
     section .title{ font-size: 2.25rem; }
     .section-3 .card-title{ font-size: 2rem; }
+    .section-3 .card-image img{ max-width: 85%; }
+    .section-3 .one.lost-found-card{ min-height: unset; }
     .section-3 ul li{ font-size: 1.05rem; }
+    /* Medium screens: slightly wider copy */
+    .section-1 .text p{ max-width: 44ch; }
+    /* WHAT WE DO tablet tweaks */
+    .section-2 .text p{ max-width: 46ch; }
 }
 
 /* Mid devices */
