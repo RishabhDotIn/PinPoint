@@ -20,20 +20,23 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mx-auto">
-          <li class="nav-item">
-            <a class="nav-link grow" href="../index.html">Home</a>
+          <li class="nav-item grow">
+            <a class="nav-link" href="../index.html">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link grow" href="lostForm.html">Lost</a>
+          <li class="nav-item grow">
+            <a class="nav-link" href="lostForm.html">Lost</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link grow" href="foundForm.html">Found</a>
+          <li class="nav-item grow">
+            <a class="nav-link" href="foundForm.html">Found</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link grow" href="../about_us.html">About Us</a>
+          <li class="nav-item grow">
+            <a class="nav-link" href="../about_us.html">About Us</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link grow" href="contactus.html">Contact Us</a>
+          <li class="nav-item grow">
+            <a class="nav-link" href="contactus.html">Contact Us</a>
+          </li>
+          <li class="nav-item grow">
+            <a class="nav-link" href="campus-select.html">Select Campus</a>
           </li>
         </ul>
       </div>
@@ -48,14 +51,8 @@
         </div>
 
         <div class="auth-card" id="form-container">
-          <h2 class="mb-2">Search campus</h2>
-          <div class="auth-help">Start typing the campus name or code, then select from the list.</div>
-          <div class="form-group">
-            <label for="q">Search</label>
-            <input id="q" type="text" class="form-control" placeholder="Search campuses..." />
-          </div>
-          <button id="searchBtn" type="button" class="btn btn-primary btn-block mt-2">Search</button>
-          <div class="divider my-3"><span>results</span></div>
+          <h2 class="mb-2">Select campus</h2>
+          <div class="auth-help">Choose your campus below. You can change it later in settings.</div>
           <ul id="results" class="list-group"></ul>
         </div>
       </section>
@@ -82,32 +79,36 @@
       let me;
       async function load() {
         me = await requireAuthOrRedirect();
+        if (me && me.campusId) {
+          // Already selected once; treat this page as first-time only
+          window.location.href = '../index.html';
+          return;
+        }
         await runSearch();
       }
 
       async function runSearch() {
-        const q = document.getElementById('q').value.trim();
         const list = document.getElementById('results');
         list.innerHTML = '<li class="list-group-item">Loading...</li>';
 
         // Fetch from API
-        const campuses = await Api.getCampuses(q);
+        const campuses = await Api.getCampuses('');
         list.innerHTML = '';
 
-        // Always show default campus entry
-        const defaultCampus = { name: 'Chitkara University, PUNJAB', slug: 'chitkara-punjab', _id: 'chitkara-punjab' };
-        renderCampusItem(list, defaultCampus);
+        if (Array.isArray(campuses) && campuses.length) {
+          // Prefer showing Chitkara Punjab first when available
+          const preferred = campuses.find(c =>
+            (c.name && c.name.toLowerCase() === 'chitkara university, punjab') ||
+            (c.slug && c.slug.toLowerCase() === 'chitkara-punjab')
+          );
+          if (preferred) renderCampusItem(list, preferred);
 
-        if (Array.isArray(campuses)) {
           for (const c of campuses) {
-            // Avoid duplicate if API already includes default
-            if (c.name && c.name.toLowerCase() === defaultCampus.name.toLowerCase()) continue;
+            if (preferred && c._id === preferred._id) continue; // avoid duplicate
             renderCampusItem(list, c);
           }
-        }
-
-        if (!Array.isArray(campuses) || campuses.length === 0) {
-          // keep at least the default campus visible; nothing else to do
+        } else {
+          list.innerHTML = '<li class="list-group-item">No campuses found</li>';
         }
       }
 
@@ -119,10 +120,11 @@
             <div class="font-weight-bold">${c.name || 'Campus'}</div>
             <div class="text-muted">${c.slug || ''}</div>
           </div>
-          <button class="btn btn-success btn-sm" type="button">Select</button>
+          <button class="btn btn-success btn-sm" type="button" ${c._id ? '' : 'disabled'}>${c._id ? 'Select' : 'Unavailable'}</button>
         `;
         li.querySelector('button').addEventListener('click', async () => {
           try {
+            if (!c._id) return alert('Campus not available to select');
             const res = await Api.updateMe({ campusId: c._id });
             if (res && !res.error) {
               window.location.href = '../index.html';
@@ -135,9 +137,6 @@
         });
         list.appendChild(li);
       }
-
-      document.getElementById('searchBtn').addEventListener('click', runSearch);
-      document.getElementById('q').addEventListener('keypress', (e) => { if (e.key === 'Enter') runSearch(); });
 
       load();
     </script>

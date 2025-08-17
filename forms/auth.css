@@ -137,8 +137,15 @@ body.auth-page::before{
 
 /* Responsive */
 @media (max-width: 992px){
-  .auth-wrapper{ grid-template-columns: 1fr; }
-  .auth-hero{ text-align: center; }
+  .auth-wrapper{ 
+    grid-template-columns: 1fr; 
+    align-items: flex-start; /* avoid vertical centering that creates big gaps */
+    padding: 20px 16px;      /* tighter spacing on mobile */
+    gap: 16px;
+    min-height: auto;        /* allow content to dictate height */
+  }
+  .auth-hero{ text-align: center; margin-bottom: 8px; }
+  .auth-title{ margin: 8px 0 6px; }
   .auth-sub{ margin-left:auto; margin-right:auto; }
 }
 
