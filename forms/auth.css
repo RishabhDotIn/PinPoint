@@ -28,11 +28,12 @@ body.auth-page::before{
 .auth-wrapper{
   max-width: 1100px;
   margin: 0 auto;
-  padding: clamp(16px, 3vw, 32px);
+  padding: clamp(24px, 4vw, 64px) clamp(16px, 3vw, 32px);
   display: grid;
   grid-template-columns: 1.15fr 1fr;
   gap: clamp(16px, 3vw, 32px);
   align-items: center;
+  min-height: calc(100vh - 160px); /* keeps footer at the bottom */
 }
 
 /* Left side hero */
