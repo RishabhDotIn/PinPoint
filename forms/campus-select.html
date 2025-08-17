@@ -36,7 +36,6 @@
             <a class="nav-link grow" href="contactus.html">Contact Us</a>
           </li>
         </ul>
-        <a href="#"><i class="fas fa-user signin grow"> SignIn</i></a>
       </div>
     </nav>
 
@@ -90,32 +89,51 @@
         const q = document.getElementById('q').value.trim();
         const list = document.getElementById('results');
         list.innerHTML = '<li class="list-group-item">Loading...</li>';
+
+        // Fetch from API
         const campuses = await Api.getCampuses(q);
         list.innerHTML = '';
-        if (!Array.isArray(campuses) || campuses.length === 0) {
-          list.innerHTML = '<li class="list-group-item">No campuses found</li>';
-          return;
+
+        // Always show default campus entry
+        const defaultCampus = { name: 'Chitkara University, PUNJAB', slug: 'chitkara-punjab', _id: 'chitkara-punjab' };
+        renderCampusItem(list, defaultCampus);
+
+        if (Array.isArray(campuses)) {
+          for (const c of campuses) {
+            // Avoid duplicate if API already includes default
+            if (c.name && c.name.toLowerCase() === defaultCampus.name.toLowerCase()) continue;
+            renderCampusItem(list, c);
+          }
         }
-        for (const c of campuses) {
-          const li = document.createElement('li');
-          li.className = 'list-group-item d-flex justify-content-between align-items-center';
-          li.innerHTML = `
-            <div>
-              <div class="font-weight-bold">${c.name}</div>
-              <div class="text-muted">${c.slug}</div>
-            </div>
-            <button class="btn btn-success btn-sm" type="button">Select</button>
-          `;
-          li.querySelector('button').addEventListener('click', async () => {
+
+        if (!Array.isArray(campuses) || campuses.length === 0) {
+          // keep at least the default campus visible; nothing else to do
+        }
+      }
+
+      function renderCampusItem(list, c){
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        li.innerHTML = `
+          <div>
+            <div class="font-weight-bold">${c.name || 'Campus'}</div>
+            <div class="text-muted">${c.slug || ''}</div>
+          </div>
+          <button class="btn btn-success btn-sm" type="button">Select</button>
+        `;
+        li.querySelector('button').addEventListener('click', async () => {
+          try {
             const res = await Api.updateMe({ campusId: c._id });
             if (res && !res.error) {
               window.location.href = '../index.html';
             } else {
               alert(res?.error?.message || 'Failed to save campus');
             }
-          });
-          list.appendChild(li);
-        }
+          } catch (e) {
+            alert('Failed to save campus');
+          }
+        });
+        list.appendChild(li);
       }
 
       document.getElementById('searchBtn').addEventListener('click', runSearch);
