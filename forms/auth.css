@@ -85,6 +85,19 @@ body.auth-page::before{
 }
 .auth-help{ color: #d1d5db; font-size: 13px; margin-bottom: 16px; }
 
+/* Inline notes and error state */
+.form-note{ margin-top:6px; font-size:12px; color:#cbd5e1; }
+.form-note.error{ color:#ef4444; }
+.auth-card .form-control.error{
+  border-color: rgba(239,68,68,.9);
+  background: rgba(239,68,68,.06);
+  color: #ef4444; /* red text when invalid */
+}
+.auth-card .form-control.error::placeholder{ color:#ef4444; opacity:.85; }
+.auth-card .form-control.error:focus{
+  box-shadow: 0 0 0 0.2rem rgba(239,68,68,.25);
+}
+
 /* Inputs */
 .auth-card .form-control{
   background: rgba(255,255,255,0.08);

@@ -15,9 +15,30 @@ export async function requireAuthOrRedirect(loginPath = '/forms/register.html') 
 }
 
 export async function handleLoginForm(emailInput, requestBtn, otpSection, otpInput, verifyBtn) {
+  const noteEl = document.getElementById('emailDomainNote');
+
+  // Clear error state as user types
+  emailInput.addEventListener('input', () => {
+    if (noteEl) noteEl.style.display = 'none';
+    emailInput.classList.remove('error');
+    emailInput.removeAttribute('aria-invalid');
+  });
+
   requestBtn.addEventListener('click', async () => {
     const email = emailInput.value.trim();
     if (!email) return alert('Enter email');
+    // Enforce domain restriction
+    const allowedDomain = '@chitkara.edu.in';
+    if (!email.toLowerCase().endsWith(allowedDomain)) {
+      if (noteEl) {
+        noteEl.style.display = 'block';
+        noteEl.textContent = 'Only Chitkara University email is allowed.';
+      }
+      emailInput.classList.add('error');
+      emailInput.setAttribute('aria-invalid', 'true');
+      emailInput.focus();
+      return;
+    }
     requestBtn.disabled = true;
     try {
       const res = await Api.requestOtp(email);
