@@ -6,13 +6,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous" />
     <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="foundForm.css">
+    <link rel="stylesheet" href="auth.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lemon&family=Monoton&family=Montserrat:ital,wght@0,200;0,400;0,500;1,300&display=swap" rel="stylesheet">
     <title>Choose Campus - PinPoint</title>
   </head>
-  <body>
+  <body class="auth-page">
     <nav class="navbar sticky-top navbar-expand-lg navbar-dark">
       <a class="navbar-brand grow" href="../index.html">PinPoint</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,23 +41,23 @@
     </nav>
 
     <main>
-      <section>
-        <div class="container" id="main-container">
-          <div class="image">
-            <img src="../images/register.jpg" alt="">
-          </div>
+      <section class="auth-wrapper">
+        <div class="auth-hero">
+          <span class="auth-badge"><i class="fas fa-map-marker-alt"></i> Campus selection</span>
+          <h1 class="auth-title">Choose your campus</h1>
+          <p class="auth-sub">Set your default campus to tailor Lost & Found posts and notifications for your location.</p>
+        </div>
 
-          <div class="container p-5 mt-5" id="form-container">
-            <h2 class="text-center mb-4">Select your campus</h2>
-            <div class="card p-4">
-              <div class="form-group">
-                <label>Search</label>
-                <input id="q" type="text" class="form-control" placeholder="Search campuses..." />
-              </div>
-              <button id="searchBtn" type="button" class="btn btn-primary mb-3">Search</button>
-              <ul id="results" class="list-group"></ul>
-            </div>
+        <div class="auth-card" id="form-container">
+          <h2 class="mb-2">Search campus</h2>
+          <div class="auth-help">Start typing the campus name or code, then select from the list.</div>
+          <div class="form-group">
+            <label for="q">Search</label>
+            <input id="q" type="text" class="form-control" placeholder="Search campuses..." />
           </div>
+          <button id="searchBtn" type="button" class="btn btn-primary btn-block mt-2">Search</button>
+          <div class="divider my-3"><span>results</span></div>
+          <ul id="results" class="list-group"></ul>
         </div>
       </section>
     </main>

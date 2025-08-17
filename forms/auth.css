@@ -123,6 +123,15 @@ body.auth-page::before{
 .divider{ display:flex; align-items:center; gap:10px; color: #cbd5e1; font-size:12px; }
 .divider:before,.divider:after{ content:""; height:1px; flex:1; background: rgba(255,255,255,0.2); }
 
+/* Lists inside auth card (campus results) */
+.auth-card .list-group-item{
+  background: rgba(255,255,255,0.06);
+  color: #e5e7eb;
+  border-color: rgba(255,255,255,0.14);
+}
+.auth-card .list-group-item .text-muted{ color:#cbd5e1 !important; }
+.auth-card .list-group-item + .list-group-item{ border-top-color: rgba(255,255,255,0.12); }
+
 /* Footer compact on this page */
 #sticky-footer{ text-align:center; }
 
