@@ -418,7 +418,19 @@ small span:hover {
         margin-right:auto; 
         text-align: center; 
     }
+    .section-2 .img{ display:none !important; }
     .section-2 .img img{ max-width: 90%; height:auto; }
+
+    /* Fix uneven gaps on mobile caused by text justification */
+    .section-5 p,
+    .testimonial-three-col p{
+        text-align: left;           /* avoid rivers of white space */
+        line-height: 1.7;           /* fluid line height for small screens */
+        hyphens: auto;              /* allow soft hyphenation */
+        -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+        word-spacing: normal;       /* reset any accidental spacing */
+    }
 }
 
 /* Tablet tweaks */
