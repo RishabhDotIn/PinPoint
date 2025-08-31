@@ -14,6 +14,15 @@ body.auth-page{
   position: relative;
   background-color: #ffffff; /* same light base as home sections */
   min-height:100vh;
+  display: flex;
+  flex-direction: column;
+  /* Use small viewport units when supported to avoid mobile browser UI gaps */
+}
+@supports (height: 100svh){
+  body.auth-page{ min-height: 100svh; }
+}
+@supports (height: 100dvh){
+  body.auth-page{ min-height: 100dvh; }
 }
 body.auth-page::before{
   content: "";
@@ -33,8 +42,13 @@ body.auth-page::before{
   grid-template-columns: 1.15fr 1fr;
   gap: clamp(16px, 3vw, 32px);
   align-items: center;
-  min-height: calc(100vh - 160px); /* keeps footer at the bottom */
+  /* content will expand as needed; body flex will push footer down */
 }
+
+/* Let main take remaining height so footer sticks to bottom */
+body.auth-page > main{ flex: 1 0 auto; display:block; }
+/* Footer should sit at the bottom */
+body.auth-page > #sticky-footer{ margin-top: auto; margin-bottom: 0; width: 100%; }
 
 /* Left side hero */
 .auth-hero{ color: var(--text-dark); }

@@ -37,15 +37,7 @@ ul li {
     color: #caac00;
 }
 
-.signin {
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-}
-
-.signin:hover {
-    color: #caac00;
-}
+/* removed legacy .signin styles to keep Login consistent with other nav items */
 
 #navbarSupportedContent>button:hover {
     background: rgb(22, 138, 113);
