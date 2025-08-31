@@ -6,17 +6,54 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>About Us</title>
-    <!-- Font Awesome & Bootstrap CSS -->
+    <!-- Font Awesome & Bootstrap CSS (match Home) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="./style.css">
-    <!-- Additional fonts (optional) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Courgette&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Courgette&family=Merienda:wght@400;700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Courgette&family=Merienda:wght@400;700&family=Yeon+Sung&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Sriracha&display=swap" rel="stylesheet" />
+    <!-- Google Fonts (match Home) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lemon&family=Monoton&family=Montserrat:ital,wght@0,200;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+    <style>
+      /* Scoped tweaks for About Us only */
+      .aboutus-wrap { position: relative; min-height: 100vh; width: 100%; display: block; }
+      .aboutus-wrap::before { content: ""; background: url('images/background.png') center/cover no-repeat; position: absolute; inset: 0; opacity: 0.35; z-index: -1; }
+      .aboutus { padding-top: 2rem; padding-bottom: 2rem; }
+      .aboutus section { margin-bottom: 2rem; }
+
+      /* Make images responsive */
+      .aboutus img { max-width: 100%; height: auto; display: inline-block; }
+      /* Accent color matching header/footer */
+      .aboutus .pp-accent{ color:#030027; }
+      /* Buttons on About Us: dark pill with white text/icon (no yellow) */
+      .aboutus .learn-more{ background-color:#030027 !important; color:#ffffff !important; border: 2px solid #030027 !important; border-radius:30px; display:inline-block; }
+      .aboutus .learn-more i{ color:#ffffff !important; }
+      .aboutus .learn-more:hover{ background-color:#ffffff !important; color:#030027 !important; border-color:#030027 !important; }
+
+      /* First section layout */
+      .aboutus .first .images { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+      .aboutus .first .sec_row { display: grid; grid-template-columns: 1fr; gap: 1.25rem; align-items: center; }
+
+      /* Two-column sections collapse on small screens */
+      .aboutus .fourth .found_row, .aboutus .fourth .lost_row { display: grid; grid-template-columns: 1fr; gap: 1rem; align-items: center; }
+
+      /* Card styling and readable text on light background */
+      .aboutus .second .box, .aboutus .third .work, .aboutus .fifth .data, .aboutus .ans { background: #ffffff; border: 1px solid rgba(0,0,0,0.08); border-radius: .5rem; padding: 1rem; }
+      .aboutus .aboutus-card { background: #ffffff; border: 1px solid rgba(0,0,0,0.08); border-radius: .5rem; }
+      .aboutus h1, .aboutus h2, .aboutus h3, .aboutus h5 { color: #030027; }
+      .aboutus p, .aboutus li, .aboutus ol { color: #333333; }
+
+      @media (min-width: 768px) {
+        .aboutus .first .sec_row { grid-template-columns: 1fr 1fr 1fr; }
+        .aboutus .fourth .found_row, .aboutus .fourth .lost_row { grid-template-columns: 1fr 1fr; }
+      }
+      @media (max-width: 575.98px) {
+        .navbar-brand { font-size: 1.1rem; }
+        .aboutus { padding-top: 1rem; padding-bottom: 1rem; }
+      }
+    </style>
 </head>
 
 <body>
@@ -36,152 +73,66 @@
         </div>
     </nav>
 
-    <div class="container">
-        <section class="first" id="first">
-            <div class="images">
-                <img src="images/shaking_hand.png" alt="" />
-                <img src="images/cheering.png" alt="" />
-                <img src="images/community.png" alt="" />
-            </div>
-            <div class="sec_row">
-                <div class="gotlost"><img src="images/logo.png" alt="PinPoint logo" /></div>
-                <div class="points">
-                    <ul>
-                        <li>
-                            We are creating a strong and generous community here and we love what we are doing here ! And everybody’s welcome..! Hop in fast or someone else will grab your seat!
-                        </li>
-                        <li>
-                            We all are humans and we love to help each other, the sense of satisfaction it gives us is just immense and I just don’t want you to be missing out that feeling ! So join in by
-                            <a href="home.html">CLICKING HERE</a>.
-                        </li>
-                    </ul>
-                </div>
-                <div class="rjitLogo"><img src="images/rjitlogo.png" alt="" /></div>
-            </div>
-        </section>
-        <section class="second" id="second">
-            <div class="box">
-                <img src="images/thinking.png" alt="" />
-                <div class="heading">
-                    <h3>You might be thinking about What value do we provide ?</h3>
-                </div>
-                <div class="content">
-                    <ol>
-                        <li>A trustworthy community.</li>
-                        <li>
-                            Trying to increase the count of honest people is our society.(They are kinda rare na?)
-                        </li>
-                        <li>
-                            Trying to minimise your loss in college years because college is only for happy-fun memories.
-                        </li>
-                        <li>
-                            Interaction with people who you would’ve never interacted with otherwise.
-                        </li>
-                        <li>There’s no communication barrier.</li>
-                        <li>
-                            Accountable people for questioning so that you can trust us without a doubt.
-                        </li>
-                    </ol>
-                </div>
-                <p>
-                    What we do here is match the lost things to their rightful owners!
-                </p>
-            </div>
-        </section>
+    <main class="aboutus-wrap">
+    <div class="container aboutus">
+      <!-- Hero -->
+      <section class="py-4 text-center">
+        <h1 class="display-4 text-dark mb-3">About PinPoint</h1>
+        <p class="lead text-dark mb-0">A simple way for our campus community to reunite lost items with their rightful owners.</p>
+      </section>
 
-        <section class="third" id="third">
-            <div class="cheems">
-                <p>Did This Ever Happen To You?</p>
-                <p id="reply">
-                    *Haan Vro, Hua Hai. <img src="images/cheems.jpg" alt="" />
-                </p>
-            </div>
-            <div class="more_points">
-                See we all are college students and more often we bring things that hold precious values in our lives to our college for various purposes! Right ?
-                <br />
-                <br /> And when you loose them unfortunately it becomes really-really very hard for you to face your guardians !! We know we get it we all have been there, when we lost things and we weren’t able to face our guardians !!
-                <br />
-                <br />
-                <em>
-            <strong
-              >So that’s why we’ve thought of a way to help out the learners
-              here who have lost their precious belongings within the hostel or
-              campus or college to get their things back!</strong
-            >
-          </em>
-                <br />
-                <br /> Now you might be thinking how are we gonna do that! But sorry we ain’t doing it !!! Yesss! You heard us right! We are not going to do it, instead...
-                <br />
-                <br />
-                <em> <strong> You will be doing it yourself !</strong> </em> You all will be helping out each other !
-                <br />
-            </div>
-            <div class="work">
-                <h3>But wait wait! How’s that gonna happen ?</h3>
-                <div class="answer">
-                    We have that figured out for you ! We have a lost and a found button on our home page. So ...
-                    <br />
-                    <p>
-                        But first make sure that you are registered in our website and if sadly you are not, then just
-                        <a href="firstpage.html">HEAD OVER HERE!</a>
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <section class="fourth" id="fourth">
-            <div class="found_row">
-                <div class="found">
-                    <h3>Found</h3>
-                    <p>
-                        If you’ve found something that was lying around in the passage or hallway or playground just collect it and click the FOUND button on our home page and submit as much details as you can in the sections over there !
-                    </p>
-                </div>
-                <img src="images/found_animated.jpg" alt="" />
-            </div>
-            <div class="lost_row">
-                <img src="images/lost_animated.jpg" alt="" />
-                <div class="lost">
-                    <h3>Lost</h3>
-                    <p>
-                        And by if any misfortune you’ve lost something that was precious to you please submit the details regarding it by clicking the LOST button in on our home page and rest assured your precious belonging will find it’s path back to you !
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <section class="fifth">
-            <div class="data">
-                <h3>
-                    This is all the data that we need for our working and nothing else.
-                </h3>
-                <ol>
-                    <li>Email Id for the registration part.</li>
-                    <li>Details of the lost</li>
-                    <li>Details of the found.</li>
-                </ol>
-            </div>
-            <h3>How do we do what we usually do!</h3>
-            <div class="ans">
-                <ol>
-                    <li>
-                        All of those who have reported a lost item will get a notification about all the found items that are reported withing 14 days.
-                    </li>
-                    <li>
-                        And then there will be a little QnA section between the two people.
-                    </li>
-                    <li>
-                        And if they assure that they are the rightful owner then the item will be handed over to them.
-                    </li>
-                </ol>
-                <strong>And even if the rightful owner is not found the property will be
-            safe in the vault especially alotted for out LOST-N-FOUND space! So
-            just rest assured guysssss!</strong
-          >
+      <!-- Mission and How it works -->
+      <section class="row">
+        <div class="col-md-6 mb-4">
+          <div class="h-100 p-4 aboutus-card">
+            <h3 class="text-dark mb-3">Our Mission</h3>
+            <p class="mb-0">We’re building a trustworthy, student-driven network that minimizes loss on campus and makes returning items easy and rewarding.</p>
+          </div>
         </div>
-        <p>This website is officially backed by the students of RJIT.</p>
+        <div class="col-md-6 mb-4">
+          <div class="h-100 p-4 aboutus-card">
+            <h3 class="text-dark mb-3">How It Works</h3>
+            <ol class="mb-0">
+              <li>Report a lost or found item.</li>
+              <li>We match and notify relevant reports.</li>
+              <li>Meet up, verify ownership, and close the loop.</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- Values -->
+      <section class="row">
+        <div class="col-md-4 mb-4">
+          <div class="h-100 p-4 aboutus-card text-center">
+            <i class="fas fa-users fa-2x mb-3 pp-accent"></i>
+            <h5 class="text-dark">Community</h5>
+            <p class="mb-0">We help each other and celebrate honesty.</p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="h-100 p-4 aboutus-card text-center">
+            <i class="fas fa-shield-alt fa-2x mb-3 pp-accent"></i>
+            <h5 class="text-dark">Trust</h5>
+            <p class="mb-0">Accountable process and transparent records.</p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="h-100 p-4 aboutus-card text-center">
+            <i class="fas fa-hands-helping fa-2x mb-3 pp-accent"></i>
+            <h5 class="text-dark">Impact</h5>
+            <p class="mb-0">Reduce loss and stress; create happy college memories.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Call to action -->
+      <section class="text-center py-4">
+        <a class="learn-more mr-2" href="index.html">Go to Home</a>
+        <a class="learn-more" href="forms/register.html"><i class="fas fa-user mr-1"></i> Login</a>
       </section>
     </div>
+    </main>
 
     <footer id="page-footer" class="py-2 bg-dark">
       <div class="brand">
@@ -190,15 +141,23 @@
       <div class="copyright">
         <small>
           <span>Copyright &copy;</span> <span>All Rights Reserved</span>
-          <span>Terms of Use</span> and <span>Privacy Policy</span>
-        </small>
+          <span>Terms of Use</span> and <span>Privacy Policy</span></small
+        >
       </div>
+<br>
+<hr>
       <div class="favicon">
         <i class="social-media fab fa-facebook-f fa-2x"></i>
         <i class="social-media fab fa-twitter fa-2x"></i>
         <i class="social-media fab fa-instagram fa-2x"></i>
         <i class="social-media fas fa-envelope fa-2x"></i>
       </div>
+
+      <div class="BackToTop">
+        <a id="back-to-top" href="#"  role="button"><i class="back fas fa-chevron-up fa-2x"></i></a>
+        <h4>Back To Top</h4>
+        </div>
+        
     </footer>
 
     <!-- Bootstrap JS -->
