@@ -16,6 +16,8 @@ export async function requireAuthOrRedirect(loginPath = '/forms/register.html') 
 
 export async function handleLoginForm(emailInput, requestBtn, otpSection, otpInput, verifyBtn) {
   const noteEl = document.getElementById('emailDomainNote');
+  const loader = document.getElementById('authLoading');
+  const loaderMsg = document.getElementById('authLoadingMsg');
 
   // Clear error state as user types
   emailInput.addEventListener('input', () => {
@@ -40,6 +42,11 @@ export async function handleLoginForm(emailInput, requestBtn, otpSection, otpInp
       return;
     }
     requestBtn.disabled = true;
+    emailInput.disabled = true;
+    if (loader) {
+      loader.style.display = 'flex';
+      if (loaderMsg) loaderMsg.textContent = `Sending OTP to ${email}...`;
+    }
     try {
       const res = await Api.requestOtp(email);
       if (res && res.ok === false) throw new Error(res?.error?.message || 'Failed to request OTP');
@@ -49,6 +56,16 @@ export async function handleLoginForm(emailInput, requestBtn, otpSection, otpInp
       alert(`Could not request OTP. Please try again.\n${err?.message || ''}`);
     } finally {
       requestBtn.disabled = false;
+      emailInput.disabled = false;
+      if (loader) loader.style.display = 'none';
+    }
+  });
+
+  // Press Enter in email field triggers Request OTP (only before OTP is shown)
+  emailInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && otpSection && otpSection.style.display !== 'block') {
+      e.preventDefault();
+      requestBtn.click();
     }
   });
 

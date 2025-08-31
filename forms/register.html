@@ -65,6 +65,13 @@
             </div>
 
             <div class="auth-card" id="form-container">
+                <!-- Loading overlay shown during OTP request -->
+                <div id="authLoading" class="auth-loading" style="display:none;" aria-live="polite" aria-busy="true">
+                    <div class="auth-loading-box">
+                        <div class="spinner" role="status" aria-label="Loading"></div>
+                        <div id="authLoadingMsg" class="auth-loading-text">Sending OTP...</div>
+                    </div>
+                </div>
                 <h2 class="mb-2">Welcome back</h2>
                 <div class="auth-help">Enter your college email to receive a sign-in code.</div>
                 <div class="form-group">
