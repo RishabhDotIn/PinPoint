@@ -45,6 +45,10 @@ router.post('/register', async (req, res) => {
   try {
     const { email, password, name } = req.body || {};
     if (!email || !password) return res.status(400).json({ error: { message: 'Email and password required' } });
+    const pw = String(password);
+    if (pw.length < 8 || !/[A-Za-z]/.test(pw) || !/[0-9]/.test(pw)) {
+      return res.status(400).json({ error: { message: 'Password must be at least 8 characters and include letters and numbers' } });
+    }
 
     const existing = await User.findOne({ email: String(email).toLowerCase() });
     if (existing && existing.passwordHash) {

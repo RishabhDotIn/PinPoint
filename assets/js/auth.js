@@ -103,6 +103,15 @@ export function handlePasswordAuth({ emailInput, passwordInput, loginBtn, regist
       }
       const email = emailInput.value.trim();
       const password = passwordInput.value;
+      const strong = password.length >= 8 && /[A-Za-z]/.test(password) && /[0-9]/.test(password);
+      if (!strong) {
+        if (noteEl) {
+          noteEl.style.display = 'block';
+          noteEl.textContent = 'Password must be at least 8 characters and include letters and numbers';
+        }
+        passwordInput.focus();
+        return;
+      }
       await withUi(async () => {
         const res = await Api.register(email, password);
         if (!res || !res.accessToken) throw new Error(res?.error?.message || 'Registration failed');
