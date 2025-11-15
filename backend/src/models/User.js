@@ -6,6 +6,7 @@ const UserSchema = new mongoose.Schema(
     name: { type: String },
     campusId: { type: mongoose.Schema.Types.ObjectId, ref: 'Campus' },
     profileCompleted: { type: Boolean, default: false },
+    passwordHash: { type: String },
   },
   { timestamps: true }
 );
