@@ -63,8 +63,10 @@ router.post('/', requireAuth, async (req, res) => {
       return res.status(404).json({ error: { message: 'Recipient not found' } });
     }
     
-    // Don't allow messaging yourself
-    if (fromUser._id.toString() === toUserId) {
+    // Allow poster to message themselves (they can reply to others in the thread)
+    // Only prevent self-messaging if the user is NOT the post owner
+    const isPostOwner = post.userId.toString() === fromUser._id.toString();
+    if (fromUser._id.toString() === toUserId && !isPostOwner) {
       return res.status(400).json({ error: { message: 'Cannot message yourself' } });
     }
     

@@ -894,6 +894,7 @@ async function loadChatMessages(postId, postOwnerId) {
     const chatContainer = document.getElementById('chatMessages');
     const me = await Api.getMe();
     const currentUserId = me._id || me.id;
+    const postOwnerIdStr = postOwnerId?.toString() || postOwnerId;
     
     chatContainer.innerHTML = '';
     
@@ -907,11 +908,23 @@ async function loadChatMessages(postId, postOwnerId) {
                        msg.fromUserId?.id?.toString() === currentUserId?.toString();
       const sender = msg.fromUserId || {};
       const senderName = sender.profile?.name || sender.name || 'Unknown';
+      const senderIdStr = sender._id?.toString() || sender.id?.toString();
+      const isPoster = senderIdStr === postOwnerIdStr;
       
       const messageDiv = document.createElement('div');
       messageDiv.style.cssText = `margin-bottom:10px; padding:10px; background:${isFromMe ? 'rgba(202,172,0,0.2)' : 'rgba(255,255,255,0.1)'}; border-radius:8px; ${isFromMe ? 'margin-left:20%;' : 'margin-right:20%;'}`;
+      
+      // Build sender name with tags
+      let senderLabel = senderName;
+      if (isFromMe) {
+        senderLabel += ' <span style="color:#caac00;">(You)</span>';
+      }
+      if (isPoster) {
+        senderLabel += ' <span style="background:#caac00; color:#030027; padding:2px 6px; border-radius:4px; font-size:0.7rem; font-weight:600; margin-left:5px;"><i class="fas fa-map-pin" style="font-size:0.65rem;"></i> Pinned by</span>';
+      }
+      
       messageDiv.innerHTML = `
-        <div style="font-size:0.85rem; color:#caac00; margin-bottom:5px;">${senderName} ${isFromMe ? '(You)' : ''}</div>
+        <div style="font-size:0.85rem; color:#caac00; margin-bottom:5px;">${senderLabel}</div>
         <div>${msg.message}</div>
         <div style="font-size:0.75rem; color:#999; margin-top:5px;">${new Date(msg.createdAt).toLocaleString()}</div>
       `;
@@ -942,16 +955,39 @@ async function sendMessage() {
     
     const me = await Api.getMe();
     const postOwnerId = post.userId?._id || post.userId;
+    const currentUserId = me._id?.toString() || me.id?.toString();
+    const isPoster = currentUserId === (postOwnerId?.toString() || postOwnerId);
     
-    // Don't allow messaging yourself
-    if (me._id?.toString() === postOwnerId?.toString()) {
-      alert('You cannot message yourself');
-      return;
+    // Determine who to send the message to
+    let toUserId = postOwnerId;
+    const messages = await Api.getMessages(currentPostId);
+    
+    if (Array.isArray(messages) && messages.length > 0) {
+      // Find the last message that wasn't from the current user
+      const lastOtherMessage = [...messages].reverse().find(msg => {
+        const msgFromId = msg.fromUserId?._id?.toString() || msg.fromUserId?.id?.toString();
+        return msgFromId !== currentUserId;
+      });
+      if (lastOtherMessage) {
+        // Reply to the last person who messaged
+        toUserId = lastOtherMessage.fromUserId?._id || lastOtherMessage.fromUserId?.id;
+      } else if (isPoster) {
+        // Poster is sending and all previous messages are from them - allow it (will be to themselves)
+        toUserId = postOwnerId;
+      }
+      // If no lastOtherMessage and not poster, toUserId stays as postOwnerId (normal case for first message from non-poster)
+    } else {
+      // No messages yet
+      if (isPoster) {
+        // Poster sending first message - allow it (will be to themselves)
+        toUserId = postOwnerId;
+      }
+      // If not poster, toUserId is postOwnerId (normal case)
     }
     
     const result = await Api.sendMessage({
       postId: currentPostId,
-      toUserId: postOwnerId,
+      toUserId: toUserId,
       message: message
     });
     
