@@ -8,6 +8,8 @@ import mongoose from 'mongoose';
 import meRouter from './src/routes/me.js';
 import campusesRouter from './src/routes/campuses.js';
 import authRouter from './src/routes/auth.js';
+import postsRouter from './src/routes/posts.js';
+import messagesRouter from './src/routes/messages.js';
 
 const app = express();
 
@@ -48,6 +50,8 @@ app.use('/v1/auth', authRouter);
 // Routes
 app.use('/v1/me', meRouter); // GET /v1/me, PATCH /v1/me
 app.use('/v1/campuses', campusesRouter); // GET /v1/campuses
+app.use('/v1/posts', postsRouter); // GET /v1/posts, POST /v1/posts, GET /v1/posts/:id
+app.use('/v1/messages', messagesRouter); // GET /v1/messages/:postId, POST /v1/messages
 
 // Mongo connect
 const MONGODB_URI = process.env.MONGODB_URI;

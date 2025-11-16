@@ -80,5 +80,21 @@ export const Api = {
   getMe: async () => (await authFetch(`${BACKEND_BASE}v1/me`)).json(),
   updateMe: async (payload) => (await authFetch(`${BACKEND_BASE}v1/me`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })).json(),
   getCampuses: async (q) => (await authFetch(`${BACKEND_BASE}v1/campuses${q ? `?q=${encodeURIComponent(q)}` : ''}`)).json(),
-  logout: async () => fetch(`${BACKEND_BASE}v1/auth/logout`, { method: 'POST', credentials: 'include' })
+  logout: async () => fetch(`${BACKEND_BASE}v1/auth/logout`, { method: 'POST', credentials: 'include' }),
+  // Posts API
+  getPosts: async (params = {}) => {
+    const query = new URLSearchParams();
+    if (params.type) query.append('type', params.type);
+    if (params.campusId) query.append('campusId', params.campusId);
+    if (params.status) query.append('status', params.status);
+    if (params.bounds) query.append('bounds', JSON.stringify(params.bounds));
+    return (await authFetch(`${BACKEND_BASE}v1/posts${query.toString() ? `?${query.toString()}` : ''}`)).json();
+  },
+  getPost: async (id) => (await authFetch(`${BACKEND_BASE}v1/posts/${id}`)).json(),
+  createPost: async (payload) => (await authFetch(`${BACKEND_BASE}v1/posts`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })).json(),
+  updatePost: async (id, payload) => (await authFetch(`${BACKEND_BASE}v1/posts/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })).json(),
+  // Messages API
+  getMessages: async (postId) => (await authFetch(`${BACKEND_BASE}v1/messages/${postId}`)).json(),
+  sendMessage: async (payload) => (await authFetch(`${BACKEND_BASE}v1/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })).json(),
+  markMessageRead: async (messageId) => (await authFetch(`${BACKEND_BASE}v1/messages/${messageId}/read`, { method: 'PATCH' })).json()
 };
