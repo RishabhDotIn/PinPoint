@@ -66,6 +66,10 @@
           <div class="mt-3 text-muted" style="font-size:12px;">
             You can change this later from your account settings.
           </div>
+          <hr style="border-color:rgba(255,255,255,0.1); margin:20px 0;" />
+          <button id="logoutBtn" class="btn btn-outline-danger btn-block" style="border-color:#dc3545; color:#dc3545;">
+            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+          </button>
         </div>
       </section>
     </main>
@@ -188,6 +192,25 @@
             el.classList.remove('error');
             if (note) { note.style.display='none'; note.textContent=''; }
           });
+        }
+      });
+
+      // Logout handler
+      document.getElementById('logoutBtn').addEventListener('click', async () => {
+        if (!confirm('Are you sure you want to logout?')) return;
+        
+        try {
+          // Call logout API
+          await Api.logout();
+          // Clear access token from localStorage
+          Api.clearAccessToken();
+          // Redirect to login page
+          window.location.href = './register.html';
+        } catch (error) {
+          console.error('Logout error:', error);
+          // Even if API call fails, clear token and redirect
+          Api.clearAccessToken();
+          window.location.href = './register.html';
         }
       });
 
