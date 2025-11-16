@@ -1,6 +1,6 @@
 // assets/js/api.js
 // API client for PinPoint backend (password-based auth)
-const BACKEND_BASE = 'https://pinpoint-49yg.onrender.com/'; // Render backend base URL
+const BACKEND_BASE = 'https://pinpoint-49yg.onrender.com/';
 
 let accessToken = sessionStorage.getItem('accessToken') || null;
 
@@ -8,6 +8,10 @@ function setAccessToken(token) {
   accessToken = token;
   if (token) sessionStorage.setItem('accessToken', token);
   else sessionStorage.removeItem('accessToken');
+}
+
+function clearAccessToken() {
+  setAccessToken(null);
 }
 
 async function checkEmail(email) {
@@ -53,11 +57,14 @@ async function authFetch(url, options = {}) {
   const opts = { ...options, credentials: 'include', headers: { ...(options.headers || {}) } };
   if (accessToken) opts.headers.Authorization = `Bearer ${accessToken}`;
   let res = await fetch(url, opts);
-  if (res.status === 401) {
+  if (res.status === 401 || res.status === 403 || res.status === 404) {
     const ref = await refreshToken();
     if (ref && ref.accessToken) {
       opts.headers.Authorization = `Bearer ${ref.accessToken}`;
       res = await fetch(url, opts);
+    }
+    if (res.status === 401 || res.status === 403 || res.status === 404) {
+      clearAccessToken();
     }
   }
   return res;
@@ -65,6 +72,7 @@ async function authFetch(url, options = {}) {
 
 export const Api = {
   setAccessToken,
+  clearAccessToken,
   checkEmail,
   register,
   login,

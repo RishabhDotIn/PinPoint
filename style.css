@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;1,100;1,200;1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;500&family=Monoton&display=swap');
 * {
     margin: 0;
     padding: 0;
@@ -55,6 +56,19 @@ section {
     flex-wrap: wrap; /* allow text and image to stack on small screens */
 }
 
+.section-1.container{
+    max-width: 100%; /* keep section full-width so background stays fixed */
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Center inner row content similar to other sections */
+.section-1 .row{
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .section-1 .text, .section-1 .img { 
     padding: 0.5rem 0; 
 }
@@ -66,6 +80,8 @@ section {
 
 /* Center image on mobile */
 .section-1 .img{ display:flex; justify-content:center; }
+
+.section-1 .img img{ max-width: 70%; height:auto; }
 
 .section-1::before {
     content: "";
@@ -468,4 +484,35 @@ small span:hover {
 #sticky-footer{
   background-color: #030027 !important; /* match navbar */
   color: #fff;
+}
+
+/* ==========================================================
+   Global reusable styles to match home page on every page
+   - Apply the grid background anywhere with .page-bg
+   - Wrap page content in .page-content to ensure min height
+   - Use the same home footer (#page-footer) already defined
+   ========================================================== */
+
+.page-bg {
+  position: relative;
+  min-height: 100vh; /* full viewport */
+}
+.page-bg::before {
+  content: "";
+  background: url('images/background.png') center/cover no-repeat;
+  position: absolute;
+  inset: 0;
+  opacity: 0.3;
+  z-index: -1;
+}
+
+.page-content {
+  min-height: calc(100vh - 180px); /* header+footer approx */
+}
+
+.page-card {
+  /* helper for centered card max width similar to auth-card */
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
 }

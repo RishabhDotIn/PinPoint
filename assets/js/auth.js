@@ -30,8 +30,7 @@ export function handlePasswordAuth({ emailInput, passwordInput, loginBtn, regist
   const onDone = async () => {
     try {
       const me = await Api.getMe();
-      if (!me.name) return (window.location.href = '/forms/profile.html');
-      if (!me.campusId) return (window.location.href = '/forms/campus-select.html');
+      if (!me || me.error || !me.profileCompleted) return (window.location.href = '/forms/profile.html');
       window.location.href = '/index.html';
     } catch {
       window.location.href = '/forms/profile.html';
@@ -51,7 +50,14 @@ export function handlePasswordAuth({ emailInput, passwordInput, loginBtn, regist
       await fn();
       await onDone();
     } catch (err) {
-      alert(err?.message || 'Operation failed');
+      if (noteEl) {
+        noteEl.style.display = 'block';
+        noteEl.textContent = err?.message || 'Operation failed';
+      }
+      // Mark password/email as error for visibility
+      emailInput.classList.add('error');
+      emailInput.setAttribute('aria-invalid', 'true');
+      passwordInput.classList.add('error');
     } finally {
       loginBtn.disabled = false;
       registerBtn && (registerBtn.disabled = false);
@@ -142,14 +148,18 @@ export function handleEmailFirstAuth({ emailInput, continueBtn, passwordRow, pas
 
   const showPasswordFor = (mode) => {
     passwordRow.style.display = 'block';
+    // hide the Continue button once we know the mode
+    if (continueBtn) continueBtn.style.display = 'none';
+    // lock email to avoid confusion after step 1
+    emailInput.disabled = true;
     if (mode === 'login') {
       loginBtn.style.display = 'inline-block';
       registerBtn.style.display = 'none';
-      loginBtn.focus();
+      passwordInput.focus();
     } else {
       registerBtn.style.display = 'inline-block';
       loginBtn.style.display = 'none';
-      registerBtn.focus();
+      passwordInput.focus();
     }
   };
 
@@ -180,7 +190,12 @@ export function handleEmailFirstAuth({ emailInput, continueBtn, passwordRow, pas
         showPasswordFor('register');
       }
     } catch (e) {
-      alert('Failed to check email');
+      if (noteEl) {
+        noteEl.style.display = 'block';
+        noteEl.textContent = 'Failed to check email. Please try again.';
+      }
+      emailInput.classList.add('error');
+      emailInput.setAttribute('aria-invalid', 'true');
     } finally {
       continueBtn.disabled = false;
       emailInput.disabled = false;
@@ -190,4 +205,12 @@ export function handleEmailFirstAuth({ emailInput, continueBtn, passwordRow, pas
 
   // Wire login/register buttons
   handlePasswordAuth({ emailInput, passwordInput, loginBtn, registerBtn });
+
+  // Enter on password triggers the visible action
+  passwordInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      if (loginBtn && loginBtn.style.display !== 'none') loginBtn.click();
+      else if (registerBtn && registerBtn.style.display !== 'none') registerBtn.click();
+    }
+  });
 }

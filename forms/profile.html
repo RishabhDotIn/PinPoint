@@ -5,28 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous" />
     <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="auth.css" />
     <title>Profile - PinPoint</title>
   </head>
-  <body>
+  <body class="auth-page page-bg">
     <nav class="navbar sticky-top navbar-expand-lg navbar-dark">
-      <a class="navbar-brand" href="../index.html">PinPoint</a>
+      <a class="navbar-brand grow" href="../index.html">PinPoint</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav"></div>
     </nav>
 
-    <main class="container py-5">
-      <h2>Complete your profile</h2>
-      <div class="card p-4">
-        <div class="form-group">
-          <label>Email</label>
-          <input id="email" type="email" class="form-control" disabled />
+    <main class="page-content">
+      <section class="auth-wrapper">
+        <div class="auth-hero">
+          <span class="auth-badge"><i class="fas fa-user"></i> Profile</span>
+          <h1 class="auth-title">Complete your profile</h1>
+          <p class="auth-sub">Provide your details so we can personalize your PinPoint experience.</p>
         </div>
-        <div class="form-group">
-          <label>Your Name</label>
-          <input id="name" type="text" class="form-control" placeholder="John Doe" />
+
+        <div class="auth-card" id="profile-card">
+          <div class="d-flex align-items-center mb-3">
+            <img id="avatar" alt="Profile" src="https://cdn-icons-png.flaticon.com/512/847/847969.png" width="56" height="56" style="border-radius:50%; margin-right:12px; background:#0c0f2d;" />
+            <div class="text-muted" style="font-size:12px;">Default avatar (you can update later)</div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input id="email" type="email" class="form-control" disabled />
+          </div>
+
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input id="name" type="text" class="form-control" placeholder="John Doe" />
+          </div>
+
+          <div class="form-group">
+            <label for="campus">University / Campus</label>
+            <select id="campus" class="form-control">
+              <option value="">Select your campus</option>
+            </select>
+            <div id="campusNote" class="form-note error" style="display:none;"></div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="roll">Roll Number</label>
+              <input id="roll" type="text" class="form-control" placeholder="e.g., 23BCS1234" />
+              <div id="rollNote" class="form-note error" style="display:none;"></div>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="phone">Phone Number</label>
+              <input id="phone" type="tel" class="form-control" placeholder="e.g., 9876543210" />
+              <div id="phoneNote" class="form-note error" style="display:none;"></div>
+            </div>
+          </div>
+
+          <button id="saveBtn" class="btn btn-primary btn-block">Save & Continue</button>
+          <div class="mt-3 text-muted" style="font-size:12px;">
+            You can change this later from your account settings.
+          </div>
         </div>
-        <button id="saveBtn" class="btn btn-primary">Save & Continue</button>
-      </div>
+      </section>
     </main>
 
+    <footer id="page-footer" class="py-2 bg-dark">
+      <div class="brand">
+        <a class="navbar-brand" href="#">PinPoint</a>
+      </div>
+      <div class="copyright">
+        <small>
+          <span>Copyright &copy;</span> <span>All Rights Reserved</span>
+          <span>Terms of Use</span> and <span>Privacy Policy</span>
+        </small>
+      </div>
+      <br />
+      <hr />
+      <div class="favicon">
+        <i class="social-media fab fa-facebook-f fa-2x"></i>
+        <i class="social-media fab fa-twitter fa-2x"></i>
+        <i class="social-media fab fa-instagram fa-2x"></i>
+        <i class="social-media fas fa-envelope fa-2x"></i>
+      </div>
+      <div class="BackToTop">
+        <a id="back-to-top" href="#" role="button"><i class="back fas fa-chevron-up fa-2x"></i></a>
+        <h4>Back To Top</h4>
+      </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js" crossorigin="anonymous"></script>
     <script type="module">
       import { Api } from '../assets/js/api.js';
       import { requireAuthOrRedirect } from '../assets/js/auth.js';
@@ -35,19 +103,91 @@
       async function load() {
         current = await requireAuthOrRedirect();
         if (!current) return;
+        // Prefill
+        const p = current.profile || {};
         document.getElementById('email').value = current.email || '';
-        document.getElementById('name').value = current.name || '';
+        document.getElementById('name').value = p.name || current.name || '';
+        document.getElementById('roll').value = p.rollNumber || current.rollNumber || '';
+        document.getElementById('phone').value = p.phone || current.phone || '';
+
+        // Load campuses
+        try {
+          const campuses = await Api.getCampuses('');
+          const sel = document.getElementById('campus');
+          sel.innerHTML = '<option value="">Select your campus</option>' +
+            (campuses || []).map(c => `<option value="${c._id || c.id || ''}">${c.name || c.slug}</option>`).join('');
+          if (p.campusId || current.campusId) sel.value = p.campusId || current.campusId;
+        } catch {
+          // keep default
+        }
       }
 
       document.getElementById('saveBtn').addEventListener('click', async () => {
         const name = document.getElementById('name').value.trim();
-        if (!name) return alert('Please enter your name');
-        const updated = await Api.updateMe({ name });
+        const campusId = document.getElementById('campus').value;
+        const rollNumber = document.getElementById('roll').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+
+        // Clear previous notes and error states
+        const campusEl = document.getElementById('campus');
+        const rollEl = document.getElementById('roll');
+        const phoneEl = document.getElementById('phone');
+        const campusNote = document.getElementById('campusNote');
+        const rollNote = document.getElementById('rollNote');
+        const phoneNote = document.getElementById('phoneNote');
+        [campusEl, rollEl, phoneEl].forEach(el => el.classList.remove('error'));
+        [campusNote, rollNote, phoneNote].forEach(n => { if (n) { n.style.display = 'none'; n.textContent=''; } });
+
+        if (!name) {
+          document.getElementById('name').classList.add('error');
+          return;
+        }
+        if (!campusId) {
+          campusEl.classList.add('error');
+          campusNote.style.display = 'block';
+          campusNote.textContent = 'Please select your campus';
+          return;
+        }
+        if (!rollNumber) {
+          rollEl.classList.add('error');
+          rollNote.style.display = 'block';
+          rollNote.textContent = 'Please enter roll number';
+          return;
+        }
+        if (!/^\d{10}$/.test(phone)) {
+          phoneEl.classList.add('error');
+          phoneNote.style.display = 'block';
+          phoneNote.textContent = 'Please enter a valid 10-digit phone number';
+          return;
+        }
+
+        // Send both nested profile (new API) and legacy root fields (old API)
+        const payload = { name, campusId, rollNumber, phone, profile: { name, campusId, rollNumber, phone } };
+        const updated = await Api.updateMe(payload);
         if (updated && !updated.error) {
-          if (!updated.campusId) window.location.href = './campus-select.html';
-          else window.location.href = '../index.html';
+          if (updated.profileCompleted) window.location.href = '../index.html';
+          else window.location.href = './campus-select.html';
         } else {
-          alert(updated?.error?.message || 'Failed to save');
+          // Show a generic inline error on phone field to avoid popups
+          phoneEl.classList.add('error');
+          phoneNote.style.display = 'block';
+          phoneNote.textContent = updated?.error?.message || 'Failed to save';
+        }
+      });
+
+      // Clear inline error on input
+      ['campus','roll','phone','name'].forEach(id => {
+        const el = document.getElementById(id);
+        const note = document.getElementById(id==='campus'?'campusNote':id+'Note');
+        if (el) {
+          el.addEventListener('input', () => {
+            el.classList.remove('error');
+            if (note) { note.style.display='none'; note.textContent=''; }
+          });
+          el.addEventListener('change', () => {
+            el.classList.remove('error');
+            if (note) { note.style.display='none'; note.textContent=''; }
+          });
         }
       });
 

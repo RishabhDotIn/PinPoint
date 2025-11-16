@@ -53,6 +53,7 @@
         <div class="auth-card" id="form-container">
           <h2 class="mb-2">Select campus</h2>
           <div class="auth-help">Choose your campus below. You can change it later in settings.</div>
+          <div id="campusGlobalNote" class="form-note error" style="display:none;"></div>
           <ul id="results" class="list-group"></ul>
         </div>
       </section>
@@ -123,16 +124,21 @@
           <button class="btn btn-success btn-sm" type="button" ${c._id ? '' : 'disabled'}>${c._id ? 'Select' : 'Unavailable'}</button>
         `;
         li.querySelector('button').addEventListener('click', async () => {
+          const note = document.getElementById('campusGlobalNote');
+          if (note) { note.style.display='none'; note.textContent=''; }
           try {
-            if (!c._id) return alert('Campus not available to select');
-            const res = await Api.updateMe({ campusId: c._id });
+            if (!c._id) {
+              if (note) { note.style.display='block'; note.textContent='Campus not available to select'; }
+              return;
+            }
+            const res = await Api.updateMe({ profile: { campusId: c._id } });
             if (res && !res.error) {
               window.location.href = '../index.html';
             } else {
-              alert(res?.error?.message || 'Failed to save campus');
+              if (note) { note.style.display='block'; note.textContent = (res?.error?.message || 'Failed to save campus'); }
             }
           } catch (e) {
-            alert('Failed to save campus');
+            if (note) { note.style.display='block'; note.textContent='Failed to save campus'; }
           }
         });
         list.appendChild(li);

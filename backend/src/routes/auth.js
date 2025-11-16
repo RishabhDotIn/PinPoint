@@ -100,6 +100,12 @@ router.post('/refresh', async (req, res) => {
     try {
       const payload = jwt.verify(token, process.env.AUTH_REFRESH_SECRET || process.env.AUTH_JWT_SECRET);
       if (payload?.typ !== 'refresh') throw new Error('bad');
+      // Ensure user still exists
+      const user = await User.findOne({ email: payload.sub });
+      if (!user) {
+        res.clearCookie('refresh_token', { path: '/v1/auth' });
+        return res.status(404).json({ error: { message: 'Account no longer exists' } });
+      }
       const accessToken = signAccessToken(payload.sub);
       return res.json({ accessToken });
     } catch (e) {

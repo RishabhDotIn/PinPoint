@@ -118,6 +118,9 @@ body.auth-page > #sticky-footer{ margin-top: auto; margin-bottom: 0; width: 100%
   border: 1px solid rgba(255,255,255,0.18);
   color: #fff;
 }
+.auth-card select.form-control option{ color:#111; background:#fff; }
+.auth-card select.form-control:focus option{ color:#111; }
+.auth-card select.form-control optgroup{ color:#111; background:#fff; }
 .auth-card .form-control::placeholder{ color: #e5e7eb; opacity: .7; }
 .auth-card .form-control:focus{
   background: rgba(255,255,255,0.12);
@@ -125,6 +128,9 @@ body.auth-page > #sticky-footer{ margin-top: auto; margin-bottom: 0; width: 100%
   box-shadow: 0 0 0 0.2rem rgba(202,172,0,.2);
   color:#fff;
 }
+
+/* Inline error helper visibility */
+.form-note.error{ display:block; }
 
 /* Loading overlay over the auth card */
 .auth-loading{
