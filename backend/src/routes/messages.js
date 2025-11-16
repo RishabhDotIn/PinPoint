@@ -114,5 +114,34 @@ router.patch('/:id/read', requireAuth, async (req, res) => {
   }
 });
 
+// DELETE /v1/messages/:id - Delete a message (only by sender)
+router.delete('/:id', requireAuth, async (req, res) => {
+  try {
+    const email = req.user.email;
+    const user = await User.findOne({ email });
+    
+    if (!user) {
+      return res.status(404).json({ error: { message: 'User not found' } });
+    }
+    
+    const message = await Message.findById(req.params.id);
+    if (!message) {
+      return res.status(404).json({ error: { code: 'MESSAGE_NOT_FOUND', message: 'Message not found' } });
+    }
+    
+    // Only allow deletion if user is the sender
+    if (message.fromUserId.toString() !== user._id.toString()) {
+      return res.status(403).json({ error: { code: 'FORBIDDEN', message: 'You can only delete your own messages' } });
+    }
+    
+    await Message.findByIdAndDelete(req.params.id);
+    
+    return res.json({ ok: true, message: 'Message deleted successfully' });
+  } catch (e) {
+    console.error('Delete message failed', e);
+    return res.status(500).json({ error: { code: 'MESSAGE_DELETE_FAILED', message: 'Failed to delete message' } });
+  }
+});
+
 export default router;
 

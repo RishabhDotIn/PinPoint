@@ -910,9 +910,11 @@ async function loadChatMessages(postId, postOwnerId) {
       const senderName = sender.profile?.name || sender.name || 'Unknown';
       const senderIdStr = sender._id?.toString() || sender.id?.toString();
       const isPoster = senderIdStr === postOwnerIdStr;
+      const messageId = msg._id || msg.id;
       
       const messageDiv = document.createElement('div');
-      messageDiv.style.cssText = `margin-bottom:10px; padding:10px; background:${isFromMe ? 'rgba(202,172,0,0.2)' : 'rgba(255,255,255,0.1)'}; border-radius:8px; ${isFromMe ? 'margin-left:20%;' : 'margin-right:20%;'}`;
+      messageDiv.style.cssText = `margin-bottom:10px; padding:10px; background:${isFromMe ? 'rgba(202,172,0,0.2)' : 'rgba(255,255,255,0.1)'}; border-radius:8px; ${isFromMe ? 'margin-left:20%;' : 'margin-right:20%;'} position:relative;`;
+      messageDiv.dataset.messageId = messageId;
       
       // Build sender name with tags
       let senderLabel = senderName;
@@ -923,12 +925,33 @@ async function loadChatMessages(postId, postOwnerId) {
         senderLabel += ' <span style="background:#caac00; color:#030027; padding:2px 6px; border-radius:4px; font-size:0.7rem; font-weight:600; margin-left:5px;"><i class="fas fa-map-pin" style="font-size:0.65rem;"></i> Pinned by</span>';
       }
       
+      // Add delete button only for user's own messages
+      const deleteButton = isFromMe ? `
+        <button class="delete-message-btn" data-message-id="${messageId}" style="position:absolute; top:5px; right:5px; background:transparent; border:none; color:#ef4444; cursor:pointer; padding:2px 5px; opacity:0.6; transition:opacity 0.2s;" title="Delete message" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">
+          <i class="fas fa-trash-alt" style="font-size:0.75rem;"></i>
+        </button>
+      ` : '';
+      
       messageDiv.innerHTML = `
+        ${deleteButton}
         <div style="font-size:0.85rem; color:#caac00; margin-bottom:5px;">${senderLabel}</div>
         <div>${msg.message}</div>
         <div style="font-size:0.75rem; color:#999; margin-top:5px;">${new Date(msg.createdAt).toLocaleString()}</div>
       `;
       chatContainer.appendChild(messageDiv);
+      
+      // Add delete event listener if it's user's message
+      if (isFromMe) {
+        const deleteBtn = messageDiv.querySelector('.delete-message-btn');
+        if (deleteBtn) {
+          deleteBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            if (confirm('Are you sure you want to delete this message?')) {
+              await deleteMessage(messageId, postId, postOwnerId);
+            }
+          });
+        }
+      }
     });
     
     // Scroll to bottom
@@ -936,6 +959,24 @@ async function loadChatMessages(postId, postOwnerId) {
   } catch (error) {
     console.error('Error loading messages:', error);
     document.getElementById('chatMessages').innerHTML = '<p style="color:#ef4444;">Failed to load messages</p>';
+  }
+}
+
+// Delete message handler
+async function deleteMessage(messageId, postId, postOwnerId) {
+  try {
+    const result = await Api.deleteMessage(messageId);
+    
+    if (result.error) {
+      alert('Failed to delete message: ' + (result.error.message || 'Unknown error'));
+      return;
+    }
+    
+    // Reload messages to reflect deletion
+    await loadChatMessages(postId, postOwnerId);
+  } catch (error) {
+    console.error('Error deleting message:', error);
+    alert('Failed to delete message');
   }
 }
 

@@ -96,5 +96,6 @@ export const Api = {
   // Messages API
   getMessages: async (postId) => (await authFetch(`${BACKEND_BASE}v1/messages/${postId}`)).json(),
   sendMessage: async (payload) => (await authFetch(`${BACKEND_BASE}v1/messages`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })).json(),
-  markMessageRead: async (messageId) => (await authFetch(`${BACKEND_BASE}v1/messages/${messageId}/read`, { method: 'PATCH' })).json()
+  markMessageRead: async (messageId) => (await authFetch(`${BACKEND_BASE}v1/messages/${messageId}/read`, { method: 'PATCH' })).json(),
+  deleteMessage: async (messageId) => (await authFetch(`${BACKEND_BASE}v1/messages/${messageId}`, { method: 'DELETE' })).json()
 };
