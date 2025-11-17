@@ -85,7 +85,7 @@
       }
 
       .action-panel h3 {
-        color: #caac00;
+        color: #7dd3fc;
         font-weight: 700;
         margin-bottom: 20px;
         text-align: center;
@@ -93,12 +93,12 @@
 
       .action-btn {
         width: 100%;
-        padding: 20px;
+        padding: 14px 16px;
         border: 2px solid #caac00;
         border-radius: 10px;
         background: transparent;
         color: #caac00;
-        font-size: 1.3rem;
+        font-size: 1.05rem;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s;
@@ -115,7 +115,7 @@
       }
 
       .action-btn i {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
       }
 
       .map-container {
@@ -155,7 +155,7 @@
 
       .item-modal .close:hover {
         opacity: 1;
-        color: #caac00;
+        color: #38bdf8;
       }
 
       .item-grid {
@@ -183,14 +183,14 @@
       }
 
       .item-card:hover {
-        background: rgba(202,172,0,0.2);
-        border-color: #caac00;
+        background: rgba(56,189,248,0.2);
+        border-color: #38bdf8;
         transform: translateY(-2px);
       }
 
       .item-card.active {
-        background: #caac00;
-        border-color: #caac00;
+        background: #38bdf8;
+        border-color: #38bdf8;
         color: #030027;
       }
 
@@ -309,6 +309,35 @@
         position: relative;
         z-index: 1;
       }
+
+      /* Recent Items List */
+      .recent-list {
+        margin-top: 10px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 10px;
+        max-height: 260px;
+        overflow: auto;
+      }
+      .recent-header {
+        padding: 10px 14px;
+        font-weight: 700;
+        color: var(--pp-accent, #caac00);
+        border-bottom: 1px solid rgba(255,255,255,0.12);
+      }
+      .recent-items { list-style: none; margin: 0; padding: 6px; }
+      .recent-item {
+        display: flex; align-items: center; gap: 10px;
+        padding: 8px 10px; border-radius: 8px; color: #fff;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.04);
+        margin: 6px;
+      }
+      .recent-item .tag { font-size: .7rem; font-weight: 700; padding: 4px 8px; border-radius: 999px; color: #030027; }
+      .recent-item .tag-lost { background: #ef4444; color: #fff; }
+      .recent-item .tag-found { background: #16a34a; color: #fff; }
+      .recent-item .name { font-weight: 600; }
+      .recent-item .meta { font-size: .8rem; opacity: .8; }
 
       .map-container.map-active {
         z-index: 1045; /* Above backdrop (1040) but below modal (1050) */
@@ -450,6 +479,45 @@
           min-height: 500px;
         }
       }
+      
+      /* Animation utilities */
+      .fade-in {
+        opacity: 0;
+        transform: translateY(14px);
+        transition: opacity .6s ease, transform .6s ease;
+      }
+      .fade-in.appear {
+        opacity: 1;
+        transform: none;
+      }
+      .navbar-brand {
+        transition: transform .25s ease;
+      }
+      .navbar-brand:hover { transform: translateY(-1px); }
+      
+      @media (prefers-reduced-motion: reduce) {
+        .fade-in { transition: none; transform: none; opacity: 1; }
+        .navbar-brand { transition: none; }
+        .action-btn, .map-select-btn { transition: none; }
+      }
+
+      /* THEME OVERRIDES: replace yellow with cool blue accent */
+      :root { --pp-accent: #7dd3fc; /* sky-300 */ --pp-accent-strong: #38bdf8; }
+      .action-panel h3 { color: var(--pp-accent); }
+      .action-btn { border-color: var(--pp-accent); color: var(--pp-accent); }
+      .action-btn:hover { background: var(--pp-accent); border-color: var(--pp-accent); color: #030027; }
+      .item-modal .modal-content { border-color: var(--pp-accent); }
+      .item-modal .modal-title { color: var(--pp-accent); }
+      .item-modal .modal-header { border-bottom-color: rgba(56,189,248,0.35); }
+      .form-note { color: #ef4444; }
+      .item-details .form-group label { color: var(--pp-accent); }
+      .item-details .form-control:focus { border-color: var(--pp-accent); box-shadow: 0 0 0 0.2rem rgba(56,189,248,.25); }
+      .map-instruction { background: rgba(125,211,252,0.15); border-color: var(--pp-accent); color: var(--pp-accent); }
+      .map-instruction i { color: inherit; }
+      .map-select-btn { background: var(--pp-accent); border-color: var(--pp-accent); color: #030027; }
+      .map-select-btn:hover { background: var(--pp-accent-strong); border-color: var(--pp-accent-strong); }
+      .modal-footer .btn-primary { background: var(--pp-accent); border-color: var(--pp-accent); color: #030027; }
+      .modal-footer .btn-primary:hover { background: var(--pp-accent-strong); border-color: var(--pp-accent-strong); }
     </style>
   </head>
 
@@ -499,6 +567,32 @@
             <i class="fas fa-check-circle"></i>
             <span>Found Item</span>
           </button>
+          <div class="recent-list fade-in" aria-live="polite">
+            <div class="recent-header">Recent Items</div>
+            <ul class="recent-items" id="recentItems">
+              <li class="recent-item">
+                <span class="tag tag-lost">LOST</span>
+                <div>
+                  <div class="name">Black Wallet</div>
+                  <div class="meta">Near Block A • 2h ago</div>
+                </div>
+              </li>
+              <li class="recent-item">
+                <span class="tag tag-found">FOUND</span>
+                <div>
+                  <div class="name">Earbuds Case</div>
+                  <div class="meta">Library Lobby • 1h ago</div>
+                </div>
+              </li>
+              <li class="recent-item">
+                <span class="tag tag-lost">LOST</span>
+                <div>
+                  <div class="name">ID Card</div>
+                  <div class="meta">Cafeteria • 30m ago</div>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <!-- Map Container -->
@@ -512,8 +606,8 @@
     <div class="modal fade" id="mapPinningModal" tabindex="-1" role="dialog" aria-labelledby="mapPinningModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
       <div class="modal-dialog modal-fullscreen" role="document" style="margin:0; max-width:100%;">
         <div class="modal-content" style="background:#030027; color:#fff; border:none; border-radius:0; height:100vh;">
-          <div class="modal-header" style="border-bottom:2px solid #caac00; position:fixed; top:0; left:0; right:0; z-index:1060; background:#030027;">
-            <h5 class="modal-title" id="mapPinningModalLabel" style="color:#caac00;">
+          <div class="modal-header" style="border-bottom:2px solid #38bdf8; position:fixed; top:0; left:0; right:0; z-index:1060; background:#030027;">
+            <h5 class="modal-title" id="mapPinningModalLabel" style="color:#38bdf8;">
               <i class="fas fa-map-marker-alt"></i> Click on the map to set location
             </h5>
             <button type="button" class="close" id="closeMapPinning" aria-label="Close" style="color:#fff;">
@@ -522,12 +616,12 @@
           </div>
           <div class="modal-body" style="padding:0; margin-top:60px; height:calc(100vh - 120px); position:relative;">
             <div id="pinningMap" style="width:100%; height:100%;"></div>
-            <div style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:1061; background:rgba(3,0,39,0.9); padding:15px 30px; border-radius:10px; border:2px solid #caac00;">
+            <div style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:1061; background:rgba(3,0,39,0.9); padding:15px 30px; border-radius:10px; border:2px solid #38bdf8;">
               <button type="button" class="btn btn-success btn-lg" id="confirmMapPin" style="background:#16a34a; border-color:#16a34a; padding:10px 30px; font-size:1.1rem;">
                 <i class="fas fa-check-circle"></i> Confirm This Location
               </button>
             </div>
-            <div id="pinningMapNote" style="position:fixed; top:80px; left:50%; transform:translateX(-50%); z-index:1061; background:rgba(202,172,0,0.9); color:#030027; padding:10px 20px; border-radius:8px; display:none; font-weight:600;"></div>
+            <div id="pinningMapNote" style="position:fixed; top:80px; left:50%; transform:translateX(-50%); z-index:1061; background:rgba(56,189,248,0.9); color:#030027; padding:10px 20px; border-radius:8px; display:none; font-weight:600;"></div>
           </div>
         </div>
       </div>
@@ -536,9 +630,9 @@
     <!-- Post Details Modal (Profile + Chat) -->
     <div class="modal fade" id="postDetailsModal" tabindex="-1" role="dialog" aria-labelledby="postDetailsModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="background:#030027; color:#fff; border:2px solid #caac00;">
+        <div class="modal-content" style="background:#030027; color:#fff; border:2px solid #38bdf8;">
           <div class="modal-header" style="border-bottom:1px solid rgba(202,172,0,0.3);">
-            <h5 class="modal-title" id="postDetailsModalLabel" style="color:#caac00;">Post Details</h5>
+            <h5 class="modal-title" id="postDetailsModalLabel" style="color:#38bdf8;">Post Details</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color:#fff;">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -557,20 +651,20 @@
             
             <!-- Post Info Section -->
             <div id="postInfo" style="margin-bottom:20px; padding:15px; background:rgba(255,255,255,0.05); border-radius:8px;">
-              <h6 style="color:#caac00; margin-bottom:10px;">Item Details:</h6>
+              <h6 style="color:#38bdf8; margin-bottom:10px;">Item Details:</h6>
               <div id="postDetailsContent"></div>
             </div>
             
             <!-- Chat Section -->
             <div id="chatSection" style="margin-top:20px;">
-              <h6 style="color:#caac00; margin-bottom:10px;">Messages:</h6>
+              <h6 style="color:#38bdf8; margin-bottom:10px;">Messages:</h6>
               <div id="chatMessages" style="max-height:300px; overflow-y:auto; padding:10px; background:rgba(0,0,0,0.2); border-radius:8px; margin-bottom:10px;">
                 <!-- Messages will be loaded here -->
               </div>
               <div class="input-group">
                 <input type="text" id="chatInput" class="form-control" placeholder="Type your message..." style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff;" />
                 <div class="input-group-append">
-                  <button class="btn btn-primary" id="sendMessageBtn" style="background:#caac00; border-color:#caac00; color:#030027;">
+                  <button class="btn btn-primary" id="sendMessageBtn" style="background:#38bdf8; border-color:#38bdf8; color:#030027;">
                     <i class="fas fa-paper-plane"></i> Send
                   </button>
                 </div>
@@ -672,6 +766,24 @@
       integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
       crossorigin=""
     ></script>
+    <script>
+      (function(){
+        var toReveal = [
+          document.querySelector('.action-panel'),
+          document.querySelector('.recent-list'),
+          document.querySelector('.map-container')
+        ].filter(Boolean);
+        toReveal.forEach(function(el){ el.classList.add('fade-in'); });
+        if ('IntersectionObserver' in window) {
+          var io = new IntersectionObserver(function(entries){
+            entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('appear'); io.unobserve(e.target); } });
+          }, { threshold: 0.15 });
+          toReveal.forEach(function(el){ io.observe(el); });
+        } else {
+          toReveal.forEach(function(el){ el.classList.add('appear'); });
+        }
+      })();
+    </script>
     <script type="module" src="../assets/js/nav.js"></script>
     <script type="module" src="../assets/js/home.js"></script>
   </body>

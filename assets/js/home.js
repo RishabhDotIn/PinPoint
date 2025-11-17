@@ -95,7 +95,7 @@ function renderPosts() {
         </h6>
         <p style="margin:4px 0;font-weight:600;">${post.itemName || 'N/A'}</p>
         ${post.description ? `<p style="margin:4px 0;font-size:0.9rem;color:#666;">${post.description}</p>` : ''}
-        <button class="btn btn-sm btn-primary mt-2" onclick="window.showPostDetails('${post._id}')" style="width:100%; background:#caac00; border-color:#caac00; color:#030027;">
+        <button class="btn btn-sm btn-primary mt-2" onclick="window.showPostDetails('${post._id}')" style="width:100%; background:#38bdf8; border-color:#38bdf8; color:#030027;">
           View Details & Chat
         </button>
       </div>
@@ -109,6 +109,73 @@ function renderPosts() {
     
     markers.push(marker);
   });
+}
+
+// Render the scrollable Recent Items list in the action panel
+function renderRecentList(list = []){
+  const ul = document.getElementById('recentItems');
+  if (!ul) return;
+  // Sort by createdAt desc when available
+  const items = [...list].sort((a,b)=>{
+    const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return tb - ta;
+  }).slice(0, 12);
+
+  if (!items.length){
+    ul.innerHTML = '<li class="recent-item"><div class="name">No items yet</div><div class="meta">Be the first to post</div></li>';
+    return;
+  }
+
+  ul.innerHTML = items.map(p=>{
+    const tag = p.type === 'found' ? 'FOUND' : 'LOST';
+    const tagClass = p.type === 'found' ? 'tag-found' : 'tag-lost';
+    const label = (p.item && (p.item.label || p.item.key)) || 'Item';
+    const name = p.itemName || label;
+    const where = p.locationName || p.area || 'On campus';
+    const when = formatTimeAgo(p.createdAt);
+    return `
+      <li class="recent-item" data-id="${p._id || ''}">
+        <span class="tag ${tagClass}">${tag}</span>
+        <div>
+          <div class="name">${escapeHtml(name)}</div>
+          <div class="meta">${escapeHtml(where)} • ${when}</div>
+        </div>
+      </li>`;
+  }).join('');
+
+  // Attach click to open details/chat
+  ul.querySelectorAll('li.recent-item[data-id]').forEach(li => {
+    const id = li.getAttribute('data-id');
+    if (!id) return;
+    li.addEventListener('click', () => {
+      showPostDetails(id);
+    });
+  });
+}
+
+function formatTimeAgo(dateStr){
+  if (!dateStr) return 'just now';
+  const t = new Date(dateStr).getTime();
+  if (!t || isNaN(t)) return 'just now';
+  const diff = Math.max(0, Date.now() - t);
+  const s = Math.floor(diff/1000);
+  if (s < 60) return `${s}s ago`;
+  const m = Math.floor(s/60);
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m/60);
+  if (h < 24) return `${h}h ago`;
+  const d = Math.floor(h/24);
+  return `${d}d ago`;
+}
+
+function escapeHtml(str){
+  return String(str || '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
 }
 
 async function initMap() {
@@ -205,7 +272,7 @@ async function initMap() {
       const tempFontSize = Math.max(12, Math.min(18, 16 + (tempZoom - 17) * -2));
       window.tempMarker.setIcon(L.divIcon({
         className: 'custom-div-icon',
-        html: `<div style="display:flex;align-items:center;justify-content:center;width:${tempSize}px;height:${tempSize}px;border-radius:50%;background:#caac00;color:#030027;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);animation:pulse 1s infinite;"><i class="fas fa-map-pin" style="font-size:${tempFontSize}px;"></i></div>`,
+        html: `<div style="display:flex;align-items:center;justify-content:center;width:${tempSize}px;height:${tempSize}px;border-radius:50%;background:#38bdf8;color:#030027;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);animation:pulse 1s infinite;"><i class="fas fa-map-pin" style="font-size:${tempFontSize}px;"></i></div>`,
         iconSize: [tempSize, tempSize],
         iconAnchor: [tempSize / 2, tempSize]
       }));
@@ -349,7 +416,7 @@ async function initMap() {
       tempPinningMarker = L.marker([lat, lng], {
         icon: L.divIcon({
           className: 'custom-div-icon',
-          html: `<div style="display:flex;align-items:center;justify-content:center;width:${tempSize}px;height:${tempSize}px;border-radius:50%;background:#caac00;color:#030027;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);animation:pulse 1s infinite;"><i class="fas fa-map-pin" style="font-size:${tempFontSize}px;"></i></div>`,
+          html: `<div style="display:flex;align-items:center;justify-content:center;width:${tempSize}px;height:${tempSize}px;border-radius:50%;background:#38bdf8;color:#030027;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);animation:pulse 1s infinite;"><i class="fas fa-map-pin" style="font-size:${tempFontSize}px;"></i></div>`,
           iconSize: [tempSize, tempSize],
           iconAnchor: [tempSize / 2, tempSize]
         })
@@ -363,6 +430,8 @@ async function initMap() {
       if (note) {
         note.textContent = `Location selected! Click "Confirm This Location" below.`;
         note.style.display = 'block';
+        note.style.background = 'rgba(56,189,248,0.9)';
+        note.style.color = '#030027';
       }
       
       // Enable confirm button
@@ -384,7 +453,7 @@ async function initMap() {
         tempPinningMarker = L.marker([currentPin.lat, currentPin.lng], {
           icon: L.divIcon({
             className: 'custom-div-icon',
-            html: `<div style="display:flex;align-items:center;justify-content:center;width:${tempSize}px;height:${tempSize}px;border-radius:50%;background:#caac00;color:#030027;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);animation:pulse 1s infinite;"><i class="fas fa-map-pin" style="font-size:${tempFontSize}px;"></i></div>`,
+            html: `<div style="display:flex;align-items:center;justify-content:center;width:${tempSize}px;height:${tempSize}px;border-radius:50%;background:#38bdf8;color:#030027;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);animation:pulse 1s infinite;"><i class="fas fa-map-pin" style="font-size:${tempFontSize}px;"></i></div>`,
             iconSize: [tempSize, tempSize],
             iconAnchor: [tempSize / 2, tempSize]
           })
@@ -484,7 +553,7 @@ async function initMap() {
     const note = document.getElementById('pinningMapNote');
     if (note) {
       note.style.display = 'none';
-      note.style.background = 'rgba(202,172,0,0.9)';
+      note.style.background = 'rgba(56,189,248,0.9)';
       note.style.color = '#030027';
     }
   });
@@ -740,6 +809,7 @@ function initModals() {
       
       // Add to local posts array
       posts.push(savedPost);
+      renderRecentList(posts);
 
       // Add marker to map (scaled to current zoom)
       const currentZoom = map.getZoom();
@@ -759,7 +829,7 @@ function initModals() {
           </h6>
           <p style="margin:4px 0;font-weight:600;">${savedPost.itemName}</p>
           ${savedPost.description ? `<p style="margin:4px 0;font-size:0.9rem;color:#666;">${savedPost.description}</p>` : ''}
-          <button class="btn btn-sm btn-primary mt-2" onclick="window.showPostDetails('${savedPost._id}')" style="width:100%; background:#caac00; border-color:#caac00; color:#030027;">
+          <button class="btn btn-sm btn-primary mt-2" onclick="window.showPostDetails('${savedPost._id}')" style="width:100%; background:#38bdf8; border-color:#38bdf8; color:#030027;">
             View Details & Chat
           </button>
         </div>
@@ -817,9 +887,11 @@ async function loadPostsFromAPI() {
     if (Array.isArray(postsData) && !postsData.error) {
       posts = postsData;
       renderPosts();
+      renderRecentList(posts);
     } else {
       console.warn('Failed to load posts:', postsData);
       posts = [];
+      renderRecentList([]);
     }
   } catch (error) {
     console.error('Error loading posts:', error);
