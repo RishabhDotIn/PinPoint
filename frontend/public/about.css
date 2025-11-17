@@ -1,0 +1,5 @@
+.aboutus-wrap { position: relative; min-height: 100vh; width: 100%; display: block; background: url('/images/background.png') center/cover no-repeat fixed; }
+.aboutus { padding-top: 2rem; padding-bottom: 2rem; }
+.aboutus section { margin-bottom: 2rem; }
+.aboutus img { max-width: 100%; height: auto; display: inline-block; }
+.aboutus .pp-accent { color: #030027; }
